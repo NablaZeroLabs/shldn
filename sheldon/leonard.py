@@ -2,6 +2,8 @@
 Leonard always DRIVES Sheldon (this module is the __main__ driver for Sheldon)
 """
 import argparse
+import sys
+import os
 
 from sheldon import *
 
@@ -29,8 +31,9 @@ def procfiles(files, divs_found, readable, path=""):
                 sheldon = Sheldon(pysource)
                 try:
                     sheldon.analyze()
-                except SyntaxError as e:
-                    print(f"Syntax Error in {filename}: {e}")
+                except SyntaxError:
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
                     continue
                 divs_found += len(sheldon.divisions)
                 sheldon.printdivs(fname, sheldon.divisions, readable)
@@ -45,7 +48,6 @@ if __name__ == "__main__":
     else:
         readableprint = lambda *a, **k: None # do - nothing function
 
-    import os
     files_checked = 0
     divs_found = 0
 
@@ -73,5 +75,4 @@ if __name__ == "__main__":
 
     # Error
     else:
-        import sys
         sys.exit(f"{ARGS.path} doesn't exist!")
