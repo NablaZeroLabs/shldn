@@ -55,4 +55,8 @@ class Sheldon:
                 if not readable:
                     print(f"{filename}", end="")
                 else: print(" " * TABSIZE, end="")
-                print(f"{div[LINENO]:4d} {div[NUMERATOR]:5} / {div[DENOMINATOR]}")
+                print(f" {div[LINENO]} {div[NUMERATOR]:5} / {div[DENOMINATOR]}")
+
+if __name__ == "__main__":
+    print("Leonard always drives Sheldon around")
+    print("execute the leonard driver instead")
