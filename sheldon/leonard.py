@@ -8,14 +8,14 @@ from sheldon import *
 def parseargs():
     """parse the command line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-hr", "--human_readable", 
+    parser.add_argument("-hr", "--human_readable",
                         help="set for friendlier output",
                         action="store_true")
-    parser.add_argument("-r", "--recursive", 
+    parser.add_argument("-r", "--recursive",
                         help="recursively check python files in path",
                         action="store_true")
-    parser.add_argument("path", 
-                        type=str, 
+    parser.add_argument("path",
+                        type=str,
                         help="path to python source file(s)")
     return parser.parse_args()
 
@@ -34,7 +34,7 @@ def procfiles(files, divs_found, readable, path=""):
                     continue
                 divs_found += len(sheldon.divisions)
                 sheldon.printdivs(fname, sheldon.divisions, readable)
-    return divs_found 
+    return divs_found
 
 if __name__ == "__main__":
     ARGS = parseargs()
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     files_checked = 0
     divs_found = 0
 
-    # Directory path 
+    # Directory path
     if os.path.isdir(ARGS.path):
         for path, dirs, files in os.walk(ARGS.path):
             files = [f for f in os.listdir(path) if f.endswith(tuple(EXTENSIONS))]
