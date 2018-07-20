@@ -5,7 +5,13 @@ import argparse
 import sys
 import os
 
-from sheldon import *
+try:
+    from cooper import Sheldon
+except:
+    from .cooper import Sheldon
+
+# Extensions for python source files
+EXTENSIONS = [".py", ".mpy"]
 
 def parseargs():
     """parse the command line arguments"""
@@ -39,7 +45,7 @@ def procfiles(files, divs_found, readable, path=""):
                 sheldon.printdivs(fname, sheldon.divisions, readable)
     return divs_found
 
-if __name__ == "__main__":
+def main():
     ARGS = parseargs()
 
     if ARGS.human_readable:
@@ -76,3 +82,6 @@ if __name__ == "__main__":
     # Error
     else:
         sys.exit(f"{ARGS.path} doesn't exist!")
+
+if __name__ == "__main__":
+    main()
