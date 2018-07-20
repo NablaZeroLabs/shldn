@@ -34,15 +34,15 @@ def procfiles(files, divs_found, readable, path=""):
             fname = os.path.join(path, filename)
             with open(fname) as f:
                 pysource = f.read()
-                sheldon = Sheldon(pysource)
+                s = Sheldon(pysource)
                 try:
-                    sheldon.analyze()
+                    s.analyze()
                 except SyntaxError:
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
                     continue
-                divs_found += len(sheldon.divisions)
-                sheldon.printdivs(fname, sheldon.divisions, readable)
+                divs_found += len(s.divisions)
+                s.printdivs(fname, s.divisions, readable)
     return divs_found
 
 def main():

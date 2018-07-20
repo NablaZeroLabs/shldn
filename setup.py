@@ -1,35 +1,48 @@
 import os
+import io
 
 from setuptools import setup, find_packages
 
+# Package meta-data.
+NAME = 'shldn'
+DESCRIPTION = 'Find divisions in Python code'
+URL = 'https://github.com/NablaZeroLabs/sheldon'
+EMAIL = 'pablo.ordorica@nablazerolabs.com'
+AUTHOR = 'Pablo Ordorica Wiener'
+REQUIRES_PYTHON = '>=3.6.0'
+VERSION = None
+
 here = os.path.abspath(os.path.dirname(__file__))
+# Import the README and use it as the long-description.
+# Note: this will only work if 'README.md' is present in your MANIFEST.in file!
+try:
+    with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+        long_description = '\n' + f.read()
+except FileNotFoundError:
+    long_description = DESCRIPTION
 
-with open("README.md", "r") as f:
-    long_description = f.read()
-
+# Load the package's __version__.py module as a dictionary.
 about = {}
-with open(os.path.join(here, "sheldon", "__version__.py")) as v:
-    exec(v.read(), about)
-
-required = [
-    "setuptools>=36.2.1",
-]
+if not VERSION:
+    with open(os.path.join(here, NAME, '__version__.py')) as f:
+        exec(f.read(), about)
+else:
+    about['__version__'] = VERSION
 
 setup(
-    name="sheldon",
-    version=about["__version__"],
-    author="Pablo Ordorica-Wiener",
-    author_email="pablo.ordorica@nablazerolabs.com",
-    description="Find divisions in Python code.",
+    name=NAME,
+    version=VERSION,
+    author=AUTHOR,
+    author_email=EMAIL,
+    description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/NablaZeroLabs/sheldon",
+    url=URL,
     packages=find_packages(),
     entry_points = {
         "console_scripts": ["sheldon=sheldon.leonard:main"]
     },
-    python_requires=">=3.7",
-    install_requires=required,
+    python_requires=REQUIRES_PYTHON,
     license="MIT",
     classifiers=(
         "Programming Language :: Python :: 3.7",
