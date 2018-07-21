@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 # Package meta-data.
 NAME = 'shldn'
 DESCRIPTION = 'Find divisions in Python code'
-URL = 'https://github.com/NablaZeroLabs/sheldon'
+URL = 'https://github.com/NablaZeroLabs/shldn'
 AUTHOR = 'Nabla Zero Labs'
 AUTHOR_EMAIL = 'pablo.ordorica@nablazerolabs.com'
 MAINTAINER = 'Pablo Ordorica Wiener'
@@ -42,7 +42,7 @@ setup(
     url=URL,
     packages=find_packages(),
     entry_points = {
-        "console_scripts": ["sheldon=sheldon.leonard:main"]
+        "console_scripts": ["shldn=shldn.leonard:main"]
     },
     python_requires=REQUIRES_PYTHON,
     license="MIT",
