@@ -4,10 +4,10 @@ code.
 """
 import ast
 
-from visitors.divisitor import DivVisitor
-
-# Extensions for python source files
-EXTENSIONS = [".py", ".mpy"]
+try:
+    from visitors.divisitor import DivVisitor
+except:
+    from .visitors.divisitor import DivVisitor
 
 # based on div tuple in divisitor module
 LINENO = 0
@@ -55,4 +55,8 @@ class Sheldon:
                 if not readable:
                     print(f"{filename}", end="")
                 else: print(" " * TABSIZE, end="")
-                print(f"{div[LINENO]:4d} {div[NUMERATOR]:5} / {div[DENOMINATOR]}")
+                print(f" {div[LINENO]} {div[NUMERATOR]:5} / {div[DENOMINATOR]}")
+
+if __name__ == "__main__":
+    print("Leonard always drives Sheldon around")
+    print("execute the leonard driver instead")

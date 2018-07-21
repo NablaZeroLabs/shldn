@@ -2,20 +2,28 @@
 Leonard always DRIVES Sheldon (this module is the __main__ driver for Sheldon)
 """
 import argparse
+import sys
+import os
 
-from sheldon import *
+try:
+    from cooper import Sheldon
+except:
+    from .cooper import Sheldon
+
+# Extensions for python source files
+EXTENSIONS = [".py", ".mpy"]
 
 def parseargs():
     """parse the command line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-hr", "--human_readable", 
+    parser.add_argument("-hr", "--human_readable",
                         help="set for friendlier output",
                         action="store_true")
-    parser.add_argument("-r", "--recursive", 
+    parser.add_argument("-r", "--recursive",
                         help="recursively check python files in path",
                         action="store_true")
-    parser.add_argument("path", 
-                        type=str, 
+    parser.add_argument("path",
+                        type=str,
                         help="path to python source file(s)")
     return parser.parse_args()
 
@@ -26,17 +34,18 @@ def procfiles(files, divs_found, readable, path=""):
             fname = os.path.join(path, filename)
             with open(fname) as f:
                 pysource = f.read()
-                sheldon = Sheldon(pysource)
+                s = Sheldon(pysource)
                 try:
-                    sheldon.analyze()
-                except SyntaxError as e:
-                    print(f"Syntax Error in {filename}: {e}")
+                    s.analyze()
+                except SyntaxError:
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
                     continue
-                divs_found += len(sheldon.divisions)
-                sheldon.printdivs(fname, sheldon.divisions, readable)
-    return divs_found 
+                divs_found += len(s.divisions)
+                s.printdivs(fname, s.divisions, readable)
+    return divs_found
 
-if __name__ == "__main__":
+def main():
     ARGS = parseargs()
 
     if ARGS.human_readable:
@@ -45,11 +54,10 @@ if __name__ == "__main__":
     else:
         readableprint = lambda *a, **k: None # do - nothing function
 
-    import os
     files_checked = 0
     divs_found = 0
 
-    # Directory path 
+    # Directory path
     if os.path.isdir(ARGS.path):
         for path, dirs, files in os.walk(ARGS.path):
             files = [f for f in os.listdir(path) if f.endswith(tuple(EXTENSIONS))]
@@ -73,5 +81,7 @@ if __name__ == "__main__":
 
     # Error
     else:
-        import sys
         sys.exit(f"{ARGS.path} doesn't exist!")
+
+if __name__ == "__main__":
+    main()
