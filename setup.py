@@ -7,8 +7,9 @@ from setuptools import setup, find_packages
 NAME = 'shldn'
 DESCRIPTION = 'Find divisions in Python code'
 URL = 'https://github.com/NablaZeroLabs/sheldon'
-EMAIL = 'pablo.ordorica@nablazerolabs.com'
-AUTHOR = 'Pablo Ordorica Wiener'
+AUTHOR = 'Nabla Zero Labs'
+AUTHOR_EMAIL = 'pablo.ordorica@nablazerolabs.com'
+MAINTAINER = 'Pablo Ordorica Wiener'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = None
 
@@ -34,6 +35,7 @@ setup(
     version=VERSION,
     author=AUTHOR,
     author_email=EMAIL,
+    maintainer=MAINTAINER,
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
