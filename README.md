@@ -1,7 +1,9 @@
 # shldn 
 Sheldon Cooper ALWAYS points out what (he thinks) is wrong with people and their work
 
-`shldn` is a console-application that finds all the division operations in Python source code. It uses Python's [AST](https://docs.python.org/3/library/ast.html) module to process and parse the code. It, then traverses the abstract syntax tree to find all the division operations, and prints them in a normal or more readable format to the console. 
+## What is it?
+
+`shldn` is a console-application that finds all the division operations in Python source code to facilitate transitioning Python 2 code to Python 3. It uses Python's [AST](https://docs.python.org/3/library/ast.html) module to process and parse the code. It, then traverses the abstract syntax tree to find all the division operations, and prints them in a normal or more readable format to the console. 
 
 ## Motivation
 
@@ -12,8 +14,7 @@ Sheldon Cooper ALWAYS points out what (he thinks) is wrong with people and their
 - Division in Python 3 always returns a `float`; whereas division in Python 2 can return an `int`
 - Critical for large Python 2 code bases that perform division operations
 
-## Objective
-Sheldon is a console-application to help anyone find all the divisions in Python source code in order to facilitate transitioning Python 2 code to Python 3. 
+
 
 ## Requirements
 - Python 3
