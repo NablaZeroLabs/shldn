@@ -32,9 +32,9 @@ else:
 
 setup(
     name=NAME,
-    version=VERSION,
+    version=about['__version__'],
     author=AUTHOR,
-    author_email=EMAIL,
+    author_email=AUTHOR_EMAIL,
     maintainer=MAINTAINER,
     description=DESCRIPTION,
     long_description=long_description,
