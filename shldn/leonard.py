@@ -14,33 +14,37 @@ except:
 EXTENSIONS = [".py", ".mpy"]
 
 def parse_commandline():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-hr", "--human_readable",
-                        help="set for friendlier output",
+    parser = argparse.ArgumentParser(
+        description="Find divisions in Python code")
+
+    parser.add_argument("-u", "--human_readable",
+                        help="Display friendlier output",
                         action="store_true")
+
     parser.add_argument("-r", "--recursive",
-                        help="recursively check python files in path",
+                        help="Scan subdirectories recursively",
                         action="store_true")
+
     parser.add_argument("path",
                         type=str,
-                        help="path to python source file(s)")
+                        help="Path to the target file or directory")
+
     return parser.parse_args()
 
 def process_files(files, divs_found, readable, path=""):
-    if files:
-        for filename in files:
-            fname = os.path.join(path, filename)
-            with open(fname) as f:
-                pysource = f.read()
-                s = Sheldon(pysource)
-                try:
-                    s.analyze()
-                except SyntaxError:
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
-                    continue
-                divs_found += len(s.divisions)
-                s.printdivs(fname, s.divisions, readable)
+    for filename in files:
+        fname = os.path.join(path, filename)
+        with open(fname) as f:
+            pysource = f.read()
+            s = Sheldon(pysource)
+            try:
+                s.analyze()
+            except SyntaxError:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
+                continue
+            divs_found += len(s.divisions)
+            s.printdivs(fname, s.divisions, readable)
     return divs_found
 
 def main():
