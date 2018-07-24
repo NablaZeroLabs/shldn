@@ -4,18 +4,14 @@ Division visitor for Python 3 AST tools
 import ast
 
 class DivVisitor(ast.NodeVisitor):
-    """
-    Class that traverses the AST tree and collects all divisions (numerator,
-    denominator), the line in which they are and if the numerator and
-    denominator are the same type in the accumulator.
-    """
+    """Traverse the AST collecting all divisions."""
+
     def __init__(self):
         super().__init__()
         self._acc = []
 
     @property
     def divs(self):
-        """divisions property"""
         return self._acc
 
     class _Decorators(ast.NodeVisitor):
