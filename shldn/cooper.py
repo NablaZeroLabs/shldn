@@ -1,6 +1,5 @@
-"""
-Sheldon is a module that will help you find the divisions in your python source
-code.
+"""Sheldon helps you find the divisions in your Python code.
+
 """
 import ast
 
