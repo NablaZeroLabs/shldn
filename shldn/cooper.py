@@ -1,6 +1,7 @@
 """Sheldon helps you find the divisions in your Python code.
 
 """
+import sys
 import ast
 
 try:
@@ -19,40 +20,54 @@ TABSIZE = 4
 class Sheldon:
     """Main code analyzer."""
 
-    def __init__(self, source):
+    def __init__(self, source, sourcepath):
         """Initialize the main code analyzer.
 
         :param source: Source code.
         :type source: str
         """
         self._source = source
+        self._sourcepath = sourcepath
         self._analyzed = False
+        self._divisions = None
 
     def analyze(self):
         """Run source analysis."""
         if not self._analyzed:
             visitor = DivVisitor()
-            visitor.visit(ast.parse(self._source))
-            self._divs = visitor.divs
+            try:
+                visitor.visit(ast.parse(self._source))
+                self._divisions = visitor.divisions
+            except SyntaxError:
+                _, _, exc_tb = sys.exc_info()
+                self._divisions = [(exc_tb.tb_lineno, "SyntaxError")]
             self._analyzed = True
 
     @property
     def divisions(self):
-        """Returns the divisions"""
+        """return divisions found in the source code"""
         self.analyze()
-        return self._divs
+        return self._divisions
 
-    def printdivs(self, filename, divs, readable):
+    def printdivs(self, readable):
         """print the divisions found in the source code"""
-        if divs:
-            if readable:
-                print(f"{filename}")
-            for div in divs:
-                if not readable:
-                    print(f"{filename}", end="")
-                else: print(" " * TABSIZE, end="")
-                print(f" {div[LINENO]} {div[NUMERATOR]:5} / {div[DENOMINATOR]}")
+        divisions = self.divisions
+        if divisions:
 
+            if readable:
+                print(f"{self._sourcepath}")
+
+            for d in divisions:
+                if not readable:
+                    print(f"{self._sourcepath}", end="")
+                else:
+                    print(" " * TABSIZE, end="")
+
+                if(d[NUMERATOR] != "SyntaxError"):
+                    print(f" {d[LINENO]} {d[NUMERATOR]:5} / {d[DENOMINATOR]}")
+                else:
+                    print(f" {d[LINENO]} {d[NUMERATOR]:5}")
+                    
 if __name__ == "__main__":
     print("Leonard always drives Sheldon around")
     print("execute the leonard driver instead")

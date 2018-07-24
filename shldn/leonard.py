@@ -1,9 +1,8 @@
 """
 Leonard always DRIVES Sheldon (this module is the __main__ driver for Sheldon)
 """
-import argparse
-import sys
 import os
+import argparse
 
 try:
     from cooper import Sheldon
@@ -33,18 +32,13 @@ def parse_commandline():
 
 def process_files(files, divs_found, readable, path=""):
     for filename in files:
-        fname = os.path.join(path, filename)
-        with open(fname) as f:
+        fpath = os.path.join(path, filename)
+        with open(fpath) as f:
             pysource = f.read()
-            s = Sheldon(pysource)
-            try:
-                s.analyze()
-            except SyntaxError:
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
-                continue
+            s = Sheldon(pysource, fpath)
+            s.analyze()
             divs_found += len(s.divisions)
-            s.printdivs(fname, s.divisions, readable)
+            s.printdivs(readable)
     return divs_found
 
 def main():
@@ -61,7 +55,7 @@ def main():
 
     # Directory path
     if os.path.isdir(args.path):
-        for path, dirs, files in os.walk(args.path):
+        for path, _, _ in os.walk(args.path):
             files = [f for f in os.listdir(path) if f.endswith(tuple(EXTENSIONS))]
             files_checked += len(files)
 
@@ -75,7 +69,7 @@ def main():
 
     # File path
     elif os.path.isfile(args.path):
-        files =[f for f in [args.path] if args.path.endswith(tuple(EXTENSIONS))]
+        files = [f for f in [args.path] if args.path.endswith(tuple(EXTENSIONS))]
 
         divs_found = process_files(files, divs_found, args.human_readable)
 
@@ -83,7 +77,7 @@ def main():
 
     # Error
     else:
-        sys.exit(f"{args.path} doesn't exist!")
+        exit(f"{args.path} doesn't exist!")
 
 if __name__ == "__main__":
     main()

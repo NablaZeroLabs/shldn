@@ -11,14 +11,14 @@ class DivVisitor(ast.NodeVisitor):
         self._acc = []
 
     @property
-    def divs(self):
+    def divisions(self):
         return self._acc
 
     class _Decorators(ast.NodeVisitor):
         """subclass to enable recursion for DivVisitor methods"""
         @classmethod
         def recursive(cls, func):
-            """ Decorator to make visitor work recursively """
+            """ Decorator to make visitor work recursively inline"""
             def wrapper(self, node):
                 func(self, node)
                 for child in ast.iter_child_nodes(node):
