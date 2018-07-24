@@ -13,42 +13,44 @@ except:
 # Extensions for python source files
 EXTENSIONS = [".py", ".mpy"]
 
-def parseargs():
-    """parse the command line arguments"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-hr", "--human_readable",
-                        help="set for friendlier output",
+def parse_commandline():
+    parser = argparse.ArgumentParser(
+        description="Find divisions in Python code")
+
+    parser.add_argument("-u", "--human_readable",
+                        help="Display friendlier output",
                         action="store_true")
+
     parser.add_argument("-r", "--recursive",
-                        help="recursively check python files in path",
+                        help="Scan subdirectories recursively",
                         action="store_true")
+
     parser.add_argument("path",
                         type=str,
-                        help="path to python source file(s)")
+                        help="Path to the target file or directory")
+
     return parser.parse_args()
 
-def procfiles(files, divs_found, readable, path=""):
-    """function to process the python source files"""
-    if files:
-        for filename in files:
-            fname = os.path.join(path, filename)
-            with open(fname) as f:
-                pysource = f.read()
-                s = Sheldon(pysource)
-                try:
-                    s.analyze()
-                except SyntaxError:
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
-                    continue
-                divs_found += len(s.divisions)
-                s.printdivs(fname, s.divisions, readable)
+def process_files(files, divs_found, readable, path=""):
+    for filename in files:
+        fname = os.path.join(path, filename)
+        with open(fname) as f:
+            pysource = f.read()
+            s = Sheldon(pysource)
+            try:
+                s.analyze()
+            except SyntaxError:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                print(f"{fname} {exc_tb.tb_lineno} SyntaxError")
+                continue
+            divs_found += len(s.divisions)
+            s.printdivs(fname, s.divisions, readable)
     return divs_found
 
 def main():
-    ARGS = parseargs()
+    args = parse_commandline()
 
-    if ARGS.human_readable:
+    if args.human_readable:
         def readableprint(*args, **kwargs):
             print(*args, **kwargs)
     else:
@@ -58,30 +60,30 @@ def main():
     divs_found = 0
 
     # Directory path
-    if os.path.isdir(ARGS.path):
-        for path, dirs, files in os.walk(ARGS.path):
+    if os.path.isdir(args.path):
+        for path, dirs, files in os.walk(args.path):
             files = [f for f in os.listdir(path) if f.endswith(tuple(EXTENSIONS))]
             files_checked += len(files)
 
-            divs_found = procfiles(files, divs_found, ARGS.human_readable, path=path)
+            divs_found = process_files(files, divs_found, args.human_readable, path=path)
 
-            if not ARGS.recursive:
+            if not args.recursive:
                 exit(0)
 
         readableprint(f"{files_checked} files checked")
         readableprint(f"{divs_found} divisions found")
 
     # File path
-    elif os.path.isfile(ARGS.path):
-        files =[f for f in [ARGS.path] if ARGS.path.endswith(tuple(EXTENSIONS))]
+    elif os.path.isfile(args.path):
+        files =[f for f in [args.path] if args.path.endswith(tuple(EXTENSIONS))]
 
-        divs_found = procfiles(files, divs_found, ARGS.human_readable)
+        divs_found = process_files(files, divs_found, args.human_readable)
 
         readableprint(f"{divs_found} divisions found")
 
     # Error
     else:
-        sys.exit(f"{ARGS.path} doesn't exist!")
+        sys.exit(f"{args.path} doesn't exist!")
 
 if __name__ == "__main__":
     main()

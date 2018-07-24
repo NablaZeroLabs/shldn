@@ -1,6 +1,5 @@
-"""
-Sheldon is a module that will help you find the divisions in your python source
-code.
+"""Sheldon helps you find the divisions in your Python code.
+
 """
 import ast
 
@@ -18,33 +17,30 @@ DENOMINATOR = 2
 TABSIZE = 4
 
 class Sheldon:
-    """This master class uses the DivVisitor class
-    to analyses the source code.
+    """Main code analyzer."""
 
-    :param source: source code
-    :type source: str
-
-    """
     def __init__(self, source):
+        """Initialize the main code analyzer.
+
+        :param source: Source code.
+        :type source: str
+        """
         self._source = source
-        self._divs = DivVisitor()
         self._analyzed = False
-        self._ast = None
 
     def analyze(self):
-        """analyze the python source code"""
-        # analyze once
+        """Run source analysis."""
         if not self._analyzed:
-            self._ast = ast.parse(self._source)
-            # visit AST
-            self._divs.visit(self._ast)
+            visitor = DivVisitor()
+            visitor.visit(ast.parse(self._source))
+            self._divs = visitor.divs
             self._analyzed = True
 
     @property
     def divisions(self):
         """Returns the divisions"""
         self.analyze()
-        return self._divs.divs
+        return self._divs
 
     def printdivs(self, filename, divs, readable):
         """print the divisions found in the source code"""
