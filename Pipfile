@@ -9,6 +9,7 @@ twine = "*"
 setuptools = "*"
 wheel = "*"
 ipython = "*"
+"autopep8" = "*"
 
 [packages]
 
