@@ -3,6 +3,7 @@ Division visitor for Python 3 AST tools
 """
 import ast
 
+
 class DivVisitor(ast.NodeVisitor):
     """Traverse the AST collecting all divisions."""
 
@@ -19,6 +20,7 @@ class DivVisitor(ast.NodeVisitor):
         @classmethod
         def recursive(cls, func):
             """ Decorator to make visitor work recursively inline"""
+
             def wrapper(self, node):
                 func(self, node)
                 for child in ast.iter_child_nodes(node):
@@ -27,7 +29,10 @@ class DivVisitor(ast.NodeVisitor):
 
     @_Decorators.recursive
     def visit_BinOp(self, node):
-        """visit Binary Operation and if operation is a division append to accumulator"""
+        """Append divisions to accumulator"""
         if type(node.op).__name__ == "Div":
             # (line number, numerator, denominator)
-            self._acc.append((node.lineno, type(node.left).__name__, type(node.right).__name__))
+            self._acc.append(
+                (node.lineno,
+                 type(node.left).__name__,
+                 type(node.right).__name__))

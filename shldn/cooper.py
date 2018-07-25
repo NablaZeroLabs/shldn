@@ -1,6 +1,4 @@
-"""Sheldon helps you find the divisions in your Python code.
-
-"""
+"""Sheldon helps you find the divisions in your Python code."""
 import sys
 import ast
 
@@ -16,6 +14,7 @@ DENOMINATOR = 2
 
 # Constant for readable output
 TABSIZE = 4
+
 
 class Sheldon:
     """Main code analyzer."""
@@ -67,7 +66,8 @@ class Sheldon:
                     print(f" {d[LINENO]} {d[NUMERATOR]:5} / {d[DENOMINATOR]}")
                 else:
                     print(f" {d[LINENO]} {d[NUMERATOR]:5}")
-                    
+
+
 if __name__ == "__main__":
     print("Leonard always drives Sheldon around")
     print("execute the leonard driver instead")

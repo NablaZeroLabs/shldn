@@ -12,6 +12,7 @@ except:
 # Extensions for python source files
 EXTENSIONS = [".py", ".mpy"]
 
+
 def parse_commandline():
     parser = argparse.ArgumentParser(
         description="Find divisions in Python code")
@@ -30,6 +31,7 @@ def parse_commandline():
 
     return parser.parse_args()
 
+
 def process_files(files, divs_found, readable, path=""):
     for filename in files:
         fpath = os.path.join(path, filename)
@@ -41,6 +43,7 @@ def process_files(files, divs_found, readable, path=""):
             s.printdivs(readable)
     return divs_found
 
+
 def main():
     args = parse_commandline()
 
@@ -48,7 +51,7 @@ def main():
         def readableprint(*args, **kwargs):
             print(*args, **kwargs)
     else:
-        readableprint = lambda *a, **k: None # do - nothing function
+        readableprint = lambda *a, **k: None  # do - nothing function
 
     files_checked = 0
     divs_found = 0
@@ -56,10 +59,12 @@ def main():
     # Directory path
     if os.path.isdir(args.path):
         for path, _, _ in os.walk(args.path):
-            files = [f for f in os.listdir(path) if f.endswith(tuple(EXTENSIONS))]
+            files = [f for f in os.listdir(
+                path) if f.endswith(tuple(EXTENSIONS))]
             files_checked += len(files)
 
-            divs_found = process_files(files, divs_found, args.human_readable, path=path)
+            divs_found = process_files(
+                files, divs_found, args.human_readable, path=path)
 
             if not args.recursive:
                 exit(0)
@@ -69,7 +74,8 @@ def main():
 
     # File path
     elif os.path.isfile(args.path):
-        files = [f for f in [args.path] if args.path.endswith(tuple(EXTENSIONS))]
+        files = [f for f in [args.path]
+                 if args.path.endswith(tuple(EXTENSIONS))]
 
         divs_found = process_files(files, divs_found, args.human_readable)
 
@@ -78,6 +84,7 @@ def main():
     # Error
     else:
         exit(f"{args.path} doesn't exist!")
+
 
 if __name__ == "__main__":
     main()
