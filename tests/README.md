@@ -10,18 +10,20 @@ python3 -m unittest [-v] tests/test.py
 
 ## The Tests
 
-### Testing Division Cases in Python source files
+### Division Tests
 - Normal division
 - Nested division e.g. `1/(2/3)`
 - Division in print statement
 - No division
 - Syntax Error
-
-### Different Python source file extensions
-In order to test:
-- add extension to `EXTENSIONS` constant in `leonard.py`
-- add file with different extension to `EXT_FILES` constant 
-    - *i.e.* `div.py` or `monte.mpy`
+  
+### Non Division Tests
+- Recursive directory traversal 
+- Process different Python source file extensions
+  
+### Test more extensions:
+1. add extension to `DEFAULT_EXTENSIONS` constant in `Sheldon` class
+2. add file with different extension to `EXT_FILES` constant (*i.e.* `div.py` or `monte.mpy`)
     - file should contain:
         - ONLY 1 division 
         - between two numbers 
