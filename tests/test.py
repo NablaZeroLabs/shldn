@@ -2,10 +2,30 @@ import unittest
 import os
 
 from shldn.cooper import Sheldon
-from shldn.leonard import EXTENSIONS
+from shldn.leonard import get_files
 
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-EXT_FILES = ["div.py", "monte.mpy"]  # add manually
+TEST_FILES_DIR = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "test-data/")
+
+FIRST_LINE_NESTED_DIVISION = [(1, "Num", "BinOp"), (1, "Num", "Num")]
+FIRST_LINE_DIVISION = [(1, "Num", "Num")]
+SYNTAX_ERROR = [(1, "SyntaxError")]
+EMPTY_DIVISION = []
+EXT_FILES = ["div.py", "monte.mpy"]
+
+TEST_FILES = ["more-test-data/nested_div.py",
+              "div.py",
+              "empty.py",
+              "monte.mpy",
+              "printdiv.py",
+              "py2print.py"]
+
+NESTED_DIV_FILE = 0
+DIV_FILE = 1
+EMPTY_FILE = 2
+MPY_FILE = 3
+PRINT_DIV_FILE = 4
+PY2_PRINT_FILE = 5
 
 
 class TestSheldon(unittest.TestCase):
@@ -18,34 +38,42 @@ class TestSheldon(unittest.TestCase):
                 self.assertEqual(x, y)
 
     def test_division(self):
-        my_data_path = os.path.join(THIS_DIR, 'test-data/div.py')
-        self._check(my_data_path, [(1, "Num", "Num")])
+        my_data_path = os.path.join(TEST_FILES_DIR, TEST_FILES[DIV_FILE])
+        self._check(my_data_path, FIRST_LINE_DIVISION)
 
     def test_nested_division(self):
-        expected = [(1, "Num", "BinOp"), (1, "Num", "Num")]
-        my_data_path = os.path.join(THIS_DIR,
-                                    "test-data/more-test-data/nested_div.py")
-        self._check(my_data_path, expected)
+        my_data_path = os.path.join(TEST_FILES_DIR,
+                                    TEST_FILES[NESTED_DIV_FILE])
+        self._check(my_data_path, FIRST_LINE_NESTED_DIVISION)
 
     def test_empty(self):
-        my_data_path = os.path.join(THIS_DIR, "test-data/empty.py")
-        self._check(my_data_path, [])
+        my_data_path = os.path.join(TEST_FILES_DIR, TEST_FILES[EMPTY_FILE])
+        self._check(my_data_path, EMPTY_DIVISION)
 
     def test_SyntaxError(self):
-        my_data_path = os.path.join(THIS_DIR, "test-data/py2print.py")
-        self._check(my_data_path, [(39, "SyntaxError")])
+        my_data_path = os.path.join(TEST_FILES_DIR, TEST_FILES[PY2_PRINT_FILE])
+        self._check(my_data_path, SYNTAX_ERROR)
 
     def test_division_in_print(self):
-        my_data_path = os.path.join(THIS_DIR, "test-data/printdiv.py")
-        self._check(my_data_path, [(1, "Num", "Num")])
+        my_data_path = os.path.join(TEST_FILES_DIR, TEST_FILES[PRINT_DIV_FILE])
+        self._check(my_data_path, FIRST_LINE_DIVISION)
 
     def test_file_extension(self):
-        my_data_dir = os.path.join(THIS_DIR, "test-data/")
 
-        self.assertEqual(len(EXT_FILES), len(EXTENSIONS))
+        self.assertEqual(len(EXT_FILES), len(Sheldon.DEFAULT_EXTENSIONS))
 
         for f in EXT_FILES:
-            self._check(os.path.join(my_data_dir, f), [(1, "Num", "Num")])
+            self._check(os.path.join(TEST_FILES_DIR, f), FIRST_LINE_DIVISION)
+
+
+class TestLeonard(unittest.TestCase):
+    def test_recursion(self):
+        leonard_files = get_files(
+            TEST_FILES_DIR, True, Sheldon.DEFAULT_EXTENSIONS)
+        expected = []
+        for f in TEST_FILES:
+            expected.append(os.path.join(TEST_FILES_DIR, f))
+        self.assertEqual(sorted(leonard_files), sorted(expected))
 
 
 if __name__ == "__main__":
