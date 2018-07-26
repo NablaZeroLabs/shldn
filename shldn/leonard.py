@@ -1,5 +1,5 @@
 """
-Leonard always DRIVES Sheldon (this module is the __main__ driver for Sheldon)
+Leonard always DRIVES Sheldon (this module is the __main__ driver for shldn)
 """
 import os
 import argparse
@@ -8,9 +8,6 @@ try:
     from cooper import Sheldon
 except:
     from .cooper import Sheldon
-
-# Extensions for python source files
-EXTENSIONS = [".py", ".mpy"]
 
 
 def parse_commandline():
@@ -25,6 +22,10 @@ def parse_commandline():
                         help="Scan subdirectories recursively",
                         action="store_true")
 
+    parser.add_argument("-e", "--file_extensions",
+                        type=str,
+                        help="Specify Python file extensions")
+
     parser.add_argument("path",
                         type=str,
                         help="Path to the target file or directory")
@@ -32,19 +33,45 @@ def parse_commandline():
     return parser.parse_args()
 
 
-def process_files(files, divs_found, readable, path=""):
-    for filename in files:
-        fpath = os.path.join(path, filename)
-        with open(fpath) as f:
+def process_files(files, readable):
+    divs_found = 0
+    for file in files:
+        with open(file) as f:
             pysource = f.read()
-            s = Sheldon(pysource, fpath)
+            s = Sheldon(pysource, file)
             s.analyze()
             divs_found += len(s.divisions)
             s.printdivs(readable)
     return divs_found
 
 
+def get_files(path, recursive, extensions):
+    files = []
+    extensions = extensions or Sheldon.DEFAULT_EXTENSIONS
+
+    if os.path.isdir(path):
+        for path, _, cur_files in os.walk(path):
+            for f in cur_files:
+                if f.endswith(tuple(extensions)):
+                    files.append(os.path.join(path, f))
+
+            if not recursive:
+                break
+
+    elif os.path.isfile(path):
+        if path.endswith(tuple(extensions)):
+            files.append(path)
+        else:
+            exit(f"{path} ends with unspecified Python extension")
+
+    else:
+        exit(f"{path} doesn't exist!")
+
+    return files
+
+
 def main():
+
     args = parse_commandline()
 
     if args.human_readable:
@@ -53,37 +80,14 @@ def main():
     else:
         readableprint = lambda *a, **k: None  # do - nothing function
 
-    files_checked = 0
-    divs_found = 0
-
-    # Directory path
-    if os.path.isdir(args.path):
-        for path, _, _ in os.walk(args.path):
-            files = [f for f in os.listdir(
-                path) if f.endswith(tuple(EXTENSIONS))]
-            files_checked += len(files)
-
-            divs_found = process_files(
-                files, divs_found, args.human_readable, path=path)
-
-            if not args.recursive:
-                exit(0)
-
-        readableprint(f"{files_checked} files checked")
-        readableprint(f"{divs_found} divisions found")
-
-    # File path
-    elif os.path.isfile(args.path):
-        files = [f for f in [args.path]
-                 if args.path.endswith(tuple(EXTENSIONS))]
-
-        divs_found = process_files(files, divs_found, args.human_readable)
-
-        readableprint(f"{divs_found} divisions found")
-
-    # Error
+    if args.file_extensions:
+        files = get_files(args.path, args.recursive, [args.file_extensions])
     else:
-        exit(f"{args.path} doesn't exist!")
+        files = get_files(args.path, args.recursive, None)
+    divs_found = process_files(files, args.human_readable)
+
+    readableprint(f"{len(files)} files processed")
+    readableprint(f"{divs_found} divisions found")
 
 
 if __name__ == "__main__":

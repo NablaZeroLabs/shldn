@@ -7,17 +7,17 @@ try:
 except:
     from .visitors.divisitor import DivVisitor
 
-# based on div tuple in divisitor module
+TABSIZE = 4
+
 LINENO = 0
 NUMERATOR = 1
 DENOMINATOR = 2
 
-# Constant for readable output
-TABSIZE = 4
-
 
 class Sheldon:
     """Main code analyzer."""
+
+    DEFAULT_EXTENSIONS = [".py", ".mpy"]
 
     def __init__(self, source, sourcepath):
         """Initialize the main code analyzer.
@@ -38,8 +38,8 @@ class Sheldon:
                 visitor.visit(ast.parse(self._source))
                 self._divisions = visitor.divisions
             except SyntaxError:
-                _, _, exc_tb = sys.exc_info()
-                self._divisions = [(exc_tb.tb_lineno, "SyntaxError")]
+                _, e, _ = sys.exc_info()
+                self._divisions = [(e.lineno, "SyntaxError")]
             self._analyzed = True
 
     @property
